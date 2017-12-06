@@ -1,0 +1,119 @@
+/* CSS Stylings for the WSTC4 application */
+
+
+h1 {
+  font-family: 'Roboto';
+  font-weight: 100;
+  font-size: 20pt;	
+}
+h2 {
+  font-family: 'Roboto';
+  font-weight: 100;
+  font-size: 14pt;	
+}
+
+
+p {
+  font-family: 'Roboto';
+  font-weight: 100;
+  font-size: 12pt;	
+}
+
+body {
+  background-color:#F3F7FD;
+}
+
+.homrow1 {
+        background: url(10-DSC_0188.png) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        border-top: 5px solid black;
+        height:600px;
+        border-bottom: 5px solid black;
+}
+
+.homrow2 {
+  margin:0 auto -40px auto;
+  width:50%;
+  background-color:#fff;
+  box-shadow: 10px 10px 5px #666666;
+  border-radius: 15px;
+  text-align:center;
+  border: 1px solid black;
+  
+}
+
+
+.homrow3 {
+  height:400px;
+  margin-top:50px;
+  
+}
+
+.footer {
+  border-top: 5px solid black;
+  background-color:white;
+}
+
+
+#register {
+  background-color:transparent;
+  
+}
+
+#tabs {
+  font-size: 18pt;
+  background-color:white;
+  padding:0 -20px 0 20px;
+}
+
+
+#tabs a:link {
+  color:black;
+  font-family: Roboto;
+  font-weight: 100;
+}
+
+#bb {
+  border: 1px solid black;
+  box-shadow: 10px 10px 5px #666666;
+}
+
+
+.regrow1 {
+  border-bottom: 2px solid black;
+  border-top: 5px solid black;
+  background-color: #fff
+}
+
+.regrow2 {
+        background: url(Tysties.png) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height:575px;
+        border-bottom: 5px solid black;
+}
+
+.regrow2Col {
+  margin-top:20px;
+  background-color:#E0FBFC;
+  box-shadow: 10px 10px 5px #888888;
+  border-radius: 15px;
+}
+
+
+.regrow3 {
+  padding-bottom:30px;
+  margin:20px auto 10px auto;
+  width:90%;
+  background-color:#FFC857;
+  box-shadow: 10px 10px 5px #888888;
+  border-radius: 15px;
+}
+
+
+
