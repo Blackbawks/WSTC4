@@ -35,38 +35,39 @@ shinyUI(fluidPage(
     tabPanel('Home',
              fluidRow(class='homrow1',
                       column(12,
-                             img(src='WSTC4_header_white_light.png',width='65%')
-                      )
-                      
+                             tags$a(img(src='WSTC4_header_white_light.png',width='65%'),href='https://twitter.com/search?f=tweets&vertical=default&q=%23WSTC4&src=typd&lang=en')
+                      ),
+                      column(4,offset=8,class='timer',h1('Countdown to #WSTC4')),
+                      htmlOutput('timervalue')
+
              ),
-             
-             absolutePanel(top="63%",class='homrow2',
-                           fluidRow(
-                             column(12,
-                                    htmlOutput('timervalue')
-                             )
-                           )              
-             ),
+
              fluidRow(class='homrow3',
-               column(8,
+               column(4,class='col-xs-6 col-md-3 col-lg-3',
                       tags$button(
                         id = "register",
                         type="button",
                         class = "btn action-button shiny-bound-input",
-                        img(src = "register_now.png", width = "450px")
+                        img(src = "register_now.png", width = "100%")
                       )
                ),
-               column(4,
-                      img(id='bb',src="BrownBoob.png",width='75%')) 
+               column(3,class='col-xs-6 col-md-3 col-lg-3',
+                      tags$button(
+                        id = "info",
+                        type="button",
+                        class = "btn action-button shiny-bound-input",
+                        img(id='bb',src="BrownBoob.png",width='100%')
+                      ))
+                       
 
              ),
              fluidRow(class='footer',
-                column(1,
-                       img(src='Blackbawks.png',width='100%')
-                       ),
-                column(2,style='margin-top:40px;',
-                       HTML('<p style="vertical-align:bottom">site created by <a href="http://www.blackbawks.net">Black bawks data science</a></p>')
-                       )
+                      column(2,class='col-xs-3 col-lg-1 col-md-2',
+                             img(src='Blackbawks.png',width='100%')
+                      ),
+                      column(2,style='margin-top:40px;',class='col-xs-3',
+                             HTML('<p style="vertical-align:bottom">site created by <a href="http://www.blackbawks.net">Black bawks data science</a></p>')
+                      )
              )
              
              
@@ -88,7 +89,7 @@ shinyUI(fluidPage(
                       ),
              
              fluidRow(class='regrow2',
-                      column(8,class='regrow2Col', offset=2,
+                      column(8,class='regrow2Col col-xs-10 col-xs-offset-1', offset=2,
                           fluidRow(
                             column(12,h1('Personal Information')),
                             column(6,
@@ -132,7 +133,7 @@ shinyUI(fluidPage(
              fluidRow(class='regrow3',
                       column(12,h1('Abstract Information')),
                       column(12,textInput("title","Title:")),
-                      column(12,textAreaInput("abstract","Abstract:",width='200%',placeholder='250 words max please')),
+                      column(12,textAreaInput("abstract","Abstract:",placeholder='250 words max please')),
                       
                       column(12,h2("Please enter up to 4 keywords that describe your work (Minimum ONE keyword)")),
                       
@@ -154,17 +155,17 @@ shinyUI(fluidPage(
                       column(12,htmlOutput('success'))
              ),
              fluidRow(class='footer',
-               column(1,
+               column(2,class='col-xs-3 col-lg-1 col-md-2',
                       img(src='Blackbawks.png',width='100%')
                ),
-               column(2,style='margin-top:40px;',
+               column(2,style='margin-top:40px;',class='col-xs-3',
                       HTML('<p style="vertical-align:bottom">site created by <a href="http://www.blackbawks.net">Black bawks data science</a></p>')
                )
              )
              
     ),
-    tabPanel("More information",
-             h1('contact us here')
+    tabPanel("More information",value='information',
+             h1('Content coming')
     )
     
   )

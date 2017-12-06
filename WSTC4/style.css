@@ -8,7 +8,7 @@ h1 {
 }
 h2 {
   font-family: 'Roboto';
-  font-weight: 100;
+  font-weight: 300;
   font-size: 14pt;	
 }
 
@@ -30,7 +30,7 @@ body {
         -o-background-size: cover;
         background-size: cover;
         border-top: 5px solid black;
-        height:600px;
+        
         border-bottom: 5px solid black;
 }
 
@@ -47,9 +47,8 @@ body {
 
 
 .homrow3 {
-  height:400px;
-  margin-top:50px;
-  
+  padding-bottom:20px;
+  padding-top:20px;
 }
 
 .footer {
@@ -62,6 +61,12 @@ body {
   background-color:transparent;
   
 }
+
+#info {
+  background-color:transparent;
+  
+}
+
 
 #tabs {
   font-size: 18pt;
@@ -94,7 +99,7 @@ body {
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
-        height:575px;
+        padding-bottom:50px;
         border-bottom: 5px solid black;
 }
 
@@ -113,6 +118,23 @@ body {
   background-color:#FFC857;
   box-shadow: 10px 10px 5px #888888;
   border-radius: 15px;
+}
+
+.timer h1 {
+  font-family:impact;
+  font-size: 24pt;
+  color:white;
+  text-align:center;
+  -webkit-text-stroke: 2px black;
+}
+
+.timer .timercol {
+  margin-bottom:-25px;
+}
+
+.error {
+  color:red;
+  font-weight:300;
 }
 
 

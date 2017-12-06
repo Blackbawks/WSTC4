@@ -31,7 +31,7 @@ GETutcSubmit <- function(VAL){
 EmptyFieldCheck <- function(Field,code){
   Fname <- DF$names[which(DF$codes == code)]
   if(nchar(Field) == 0){
-    return(paste('<p style="color:red">Error: the field <strong>',Fname,'</strong> is empty',sep=''))
+    return(paste('<p class="error">Error: the field <strong>',Fname,'</strong> is empty',sep=''))
   }else{return('')}
 }
 
@@ -54,21 +54,21 @@ MergeLanguage <- function(la){
 ### Checks the Twitter handle to make sure it starts with the @
 HandleCheck <- function(hn){
   if(substr(hn,1,1) != '@'){
-    return('<p style="color:red">Error: your <strong>Twitter handle</strong> must start with an "@"')
+    return('<p class="error">Error: your <strong>Twitter handle</strong> must start with an "@"')
   }else{return('')}
 }
 
 ### Basic e-mail check - for now just checks to make sure it has @ and .
 EmailCheck <- function(em){
   if(length(grep('@',em)) == 0 | length(grep('.',em)) == 0){
-    return('<p style="color:red">Error: check to make sure your <strong>E-mail</strong> is valid')
+    return('<p class="error">Error: check to make sure your <strong>E-mail</strong> is valid')
   }else{return('')}
 }
 
 ### Checks the length of the Abstract
 AbstractCheck <- function(ab){
   if(length(strsplit(ab,' ')[[1]]) > 25){
-    return('<p style="color:red">Error: your <strong>Abstract</strong> must be less than 250 words')
+    return('<p class="error">Error: your <strong>Abstract</strong> must be less than 250 words')
   }else{return('')}
   return()
 }
@@ -76,14 +76,14 @@ AbstractCheck <- function(ab){
 ### Checks for minimum of one Keyword
 KeywordCheck <- function(ke){
   if(strsplit(ke,' ; ')[[1]][1] == ''){
-    return('<p style="color:red">Error: you need a minimum of one <strong>Keyword</strong>')
+    return('<p class="error">Error: you need a minimum of one <strong>Keyword</strong>')
   }else{return('')}
 }
 
 ### Checks to make sure a language has been selected
 LanguageCheck <- function(la){
   if(la == 'NoLang'){
-    return('<p style="color:red">Error: please select a <strong>Language</strong> you wish to tweet in')
+    return('<p class="error">Error: please select a <strong>Language</strong> you wish to tweet in')
   }else{return('')}
 }
 
@@ -147,13 +147,43 @@ shinyServer(function(input, output,session) {
     updateTabsetPanel(session = session, inputId = "tabs", selected = "registration")
   })
   
+  observeEvent(input$info, {
+    updateTabsetPanel(session = session, inputId = "tabs", selected = "information")
+  })
   
   
   output$timervalue <- renderUI({
     invalidateLater(1000, session)
     y <- Counter()
-    HTML(paste('<h1 style="font-size:24pt;font-family:Roboto;font-weight:500">',as.character(y[[1]]),'D  ',as.character(y[[2]]),'H  ',as.character(y[[3]]),
-               'M  ',as.character(y[[4]]),'S </h1>',sep=''))
+    
+    list(column(1,offset=8,
+           fluidRow(class='timer',
+             column(12,class='timercol',h1(as.character(y[[1]]))),
+                    column(12,h1('days'))
+             )
+           ),  
+    column(1,
+           fluidRow(class='timer',
+             column(12,class='timercol',h1(as.character(y[[2]]))),
+             column(12,h1('hrs'))
+           )
+          ),
+    
+    column(1,
+           fluidRow(class='timer',
+             column(12,class='timercol',h1(as.character(y[[3]]))),
+             column(12,h1('mins'))
+           )
+    ),
+    column(1,
+           fluidRow(class='timer',
+             column(12,class='timercol',h1(as.character(y[[4]]))),
+             column(12,h1('secs'))
+           )
+    )
+    )
+    #HTML(paste('<h1 style="font-size:24pt;font-family:Roboto;font-weight:500">',as.character(y[[1]]),'D  ',as.character(y[[2]]),'H  ',as.character(y[[3]]),
+    #           'M  ',as.character(y[[4]]),'S </h1>',sep=''))
   })
   
 
