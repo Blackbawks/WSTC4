@@ -15,9 +15,9 @@ options(shiny.sanitize.errors = FALSE)
 x <- read.csv("TZs.csv")
 
 ### This is a dictionary data frame to look up field values 
-DF <- data.frame(codes=c('fn','ln','em','cn','af','cs','hn','tz','td','ti','ab','ke','la','ot'),
+DF <- data.frame(codes=c('fn','ln','em','cn','af','cs','hn','tz','td','ti','ab','se','ke','la','ot'),
                  names=c('First name', 'Last name','E-mail','Country','Affiliation','Career stage',
-                         'Twitter Handle', 'Time Zone (UTC)', 'Time Zone (UTC_DST)', 'Title', 'Abstract',
+                         'Twitter Handle', 'Time Zone (UTC)', 'Time Zone (UTC_DST)', 'Title', 'Abstract','Session',
                          'Keywords','Languages','Other Abstracts'))
 
 ### Function for getting the UTC values for submission to form
@@ -36,18 +36,13 @@ EmptyFieldCheck <- function(Field,code){
 }
 
 ## Function that merges the selection from the language check boxes
-MergeLanguage <- function(la){
-  if(length(la) == 1){
-    return(la)
-  }else if(length(la == 2)){
-    return(paste(la[1],la[2],sep=' ; '))
-  }else if(length(la == 3)){
-    return(paste(la[1],la[2],la[3],sep=' ; '))
-  }else if(length(la) == 0){
-    return('NoLang')
+MergeSelect <- function(X){
+  if(length(X) == 0){
+    return('NoLuck')
+  }else if(length(X) > 0){
+    return(paste(X,collapse='; '))
   }
 }
-
 
 
 
@@ -89,7 +84,7 @@ LanguageCheck <- function(la){
 
 ############################################################################################################################
 ### This is the control function that checks all the fields for possible errors
-DataCheck <- function(fn,ln,em,af,hn,ti,ab,ke,la){
+DataCheck <- function(fn,ln,em,af,hn,ti,ab,se,ke,la){
   FNcheck <- EmptyFieldCheck(fn,'fn')
   LNcheck <- EmptyFieldCheck(ln,'ln')
   EMcheck <- EmptyFieldCheck(em,'em')
@@ -97,6 +92,7 @@ DataCheck <- function(fn,ln,em,af,hn,ti,ab,ke,la){
   HNcheck <- EmptyFieldCheck(hn,'hn')
   TIcheck <- EmptyFieldCheck(ti,'ti')
   ABcheck <- EmptyFieldCheck(ab,'ab')
+  SEcheck <- EmptyFieldCheck(se,'se')
   HANcheck <- HandleCheck(hn)
   EMAcheck <- EmailCheck(em)
   ABScheck <- AbstractCheck(ab)
@@ -104,7 +100,7 @@ DataCheck <- function(fn,ln,em,af,hn,ti,ab,ke,la){
   LANcheck <- LanguageCheck(la)
   
   messagelist <- list(FNcheck,LNcheck,EMcheck,AFcheck,HNcheck,TIcheck,ABcheck,HANcheck,EMAcheck,ABScheck,KEYcheck,LANcheck)
-  #messagelist <- list(FNcheck,LNcheck)
+  
   if(length(grep('<p*',messagelist)) == 0){
     return('<p style="font-family:Roboto;line-weight:300;font-size:14pt">Thanks for submitting to #WSTC4</p>')
   }else{
@@ -128,6 +124,77 @@ getTZ <- function(Olson){
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
+  
+  values <- reactiveValues(
+    
+    # variable to keep track of whether or not the tab switching is manual (by the
+    # user) or automatic (restoring the app's state on initialization or prev/next buttons)    
+    autoNavigating = 0,
+    
+    # search string
+    searchString = ""
+  )
+  
+  
+  observeEvent(session$clientData$url_search, {
+    # if there is a history in the URL, restore the state
+    if (nchar(session$clientData$url_search) > 1) {
+      # when the app starts, the input$navbar gets triggered, but we don't
+      # want to trigger the navigation function because the user didn't actively
+      # navigate anywhere
+      values$autoNavigating <- values$autoNavigating + 1
+      
+      restore(session$clientData$url_search)
+    }
+  })
+  
+  # restore the Shiny app's state based on the URL
+  restore <- function(qs) {
+    data <- parseQueryString(qs)
+    
+    if (!is.null(data[['page']])) {
+      # we're about to change tabs programatically, so don't trigger the
+      # navigation function
+      values$autoNavigating <- values$autoNavigating + 1
+      
+      # change to the correct tab
+      updateTabsetPanel(session, "navbar", data[['page']])
+      
+      # if the given tab has some more information we wnat to initialize,
+      # do it here
+      if (data[['page']] == "search") {
+        if (!is.null(data[['query']])) {
+          values$searchString <- data[['query']]
+          updateTextInput(session, "text", value = data[['query']])
+        }
+      }
+    }
+  }
+  
+  # when the user changes tabs, save the state in the URL
+  observeEvent(input$navbar, {
+    if (values$autoNavigating > 0) {
+      values$autoNavigating <- values$autoNavigating - 1
+      return()
+    }
+    
+    if (input$navbar == "search") {
+      shinyjs::js$updateHistory(page = "search", query = values$searchString)
+    } else {
+      shinyjs::js$updateHistory(page = input$navbar)
+    }
+  })
+  
+  # when the user clicks prev/next buttons in the browser, restore the state
+  observeEvent(input$navigatedTo, {
+    restore(input$navigatedTo)
+  })
+  
+  
+  ###############################################################
+  
+  
+  
   
   
   observeEvent(input$register, {
@@ -159,18 +226,18 @@ shinyServer(function(input, output,session) {
                 hn <- input$handle
                 tz <- GETutcSubmit(input$timezone)[[1]]
                 td <- GETutcSubmit(input$timezone)[[2]]
+                sm <- MergeSelect(input$socmedia)
                 ti <- input$title
                 ab <- input$abstract
+                se <- input$session
                 ke <- paste(input$keyword1,input$keyword2,input$keyword3,input$keyword4,sep=' ; ')
-                la <- MergeLanguage(input$language)
+                la <- MergeSelect(input$language)
                 ot <- input$otherabs
                 
-                out <- DataCheck(fn,ln,em,af,hn,ti,ab,ke,la)
+                out <- DataCheck(fn,ln,em,af,hn,ti,ab,se,ke,la)
                 
-                
+                #print(out)
                 if(out == '<p style="font-family:Roboto;line-weight:300;font-size:14pt">Thanks for submitting to #WSTC4</p>'){
-                  
-                  gs_add_row(ss,input=c(fn,ln,em,cn,af,cs,hn,tz,td,ti,ab,ke,la,ot))
                   
                   showModal(modalDialog(
                     title = "Submission Details",
@@ -179,7 +246,7 @@ shinyServer(function(input, output,session) {
                       actionButton("modalok", "OK")
                     )
                   ))
-                  
+                  gs_add_row(ss,input=c(fn,ln,em,cn,af,cs,hn,tz,td,sm,ti,ab,se,ke,la,ot))
                 }else{
                   
                   showModal(modalDialog(
