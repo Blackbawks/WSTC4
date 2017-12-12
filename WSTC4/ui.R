@@ -15,12 +15,41 @@ library(V8)
 options(shiny.sanitize.errors = FALSE)
 
 jscode <- "shinyjs.refresh = function() { history.go(0); }"
+jscode2 <- "
+shinyjs.init = function() {
+$(document).ready(function() { 
+
+var countDownDate = new Date('Apr 17, 2018 00:00:00').getTime();
+
+var x = setInterval(function() {
+var now = new Date().getTime();
+
+var distance = countDownDate - now;
+var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+document.getElementById('demo').innerHTML = days + 'ddd ' + hours + 'h '
++ minutes + 'm ' + seconds + 's ';
+
+if (distance < 0) {
+clearInterval(x);
+document.getElementById('demo').innerHTML = 'EXPIRED';
+}
+}, 1000);
+
+});
+}"
+
+
 
 x <- read.csv("TZs.csv")
 
 shinyUI(fluidPage(
   useShinyjs(),
   extendShinyjs(text = jscode),
+  extendShinyjs(text = jscode2),
   windowTitle = 'WSTC4 registration',
   selected = 'Home',
   tags$head(
@@ -38,7 +67,7 @@ shinyUI(fluidPage(
                              tags$a(img(src='WSTC4_header_white_light.png',width='65%'),href='https://twitter.com/search?f=tweets&vertical=default&q=%23WSTC4&src=typd&lang=en')
                       ),
                       column(4,offset=8,class='timer',h1('Countdown to #WSTC4')),
-                      htmlOutput('timervalue')
+                      HTML('<div id="demo"></div>')
 
              ),
 

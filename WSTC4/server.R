@@ -124,19 +124,6 @@ getTZ <- function(Olson){
   return(list(utc,utcoff))
 }
 
-## The Function for counting down to April 17th,2018
-Counter <-function(){
-  CurTime <- format(Sys.time(),tz='UTC')
-  EvTime <- as.POSIXct("2018-04-17 00:00:00",tz="UTC",format='%Y-%m-%d %H:%M:%S')
-  Dtime <- difftime(EvTime,CurTime)
-  mins <-  as.numeric(Dtime,units='secs') / 60
-  days <- mins %/% (24 * 60)
-  ct <- as.POSIXct(60 * mins, origin = "1970-01-01", tz = "UTC")
-  HH <- substring(ct,12,13)
-  MM <- substring(ct,15,16)
-  SS <- substring(ct,18)
-  return(list(days,HH,MM,SS))
-}
 
 
 # Define server logic required to draw a histogram
@@ -152,41 +139,6 @@ shinyServer(function(input, output,session) {
   })
   
   
-  output$timervalue <- renderUI({
-    invalidateLater(1000, session)
-    y <- Counter()
-    
-    list(column(1,offset=8,
-           fluidRow(class='timer',
-             column(12,class='timercol',h1(as.character(y[[1]]))),
-                    column(12,h1('days'))
-             )
-           ),  
-    column(1,
-           fluidRow(class='timer',
-             column(12,class='timercol',h1(as.character(y[[2]]))),
-             column(12,h1('hrs'))
-           )
-          ),
-    
-    column(1,
-           fluidRow(class='timer',
-             column(12,class='timercol',h1(as.character(y[[3]]))),
-             column(12,h1('mins'))
-           )
-    ),
-    column(1,
-           fluidRow(class='timer',
-             column(12,class='timercol',h1(as.character(y[[4]]))),
-             column(12,h1('secs'))
-           )
-    )
-    )
-    #HTML(paste('<h1 style="font-size:24pt;font-family:Roboto;font-weight:500">',as.character(y[[1]]),'D  ',as.character(y[[2]]),'H  ',as.character(y[[3]]),
-    #           'M  ',as.character(y[[4]]),'S </h1>',sep=''))
-  })
-  
-
   observeEvent(input$timezone, {
     output$utcoff <- renderUI({
       utco <- substr(as.character(getTZ(input$timezone)[[1]]),1,3)
